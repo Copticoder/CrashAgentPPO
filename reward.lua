@@ -1,12 +1,13 @@
 prev_apples=0
-prev_enemy_loc_value =0
-prev_boxes=0
+prev_enemy_loc_value =0 -- location of enemy
+prev_boxes=0 
 prev_lives=data.lives
-prev_crash_x = 0
-enemy_is_hit_threshold=100000
-moving_factor=0.01 -- this factor minimizes the moving reward in order not for crash to be consistently moving forward if it misses some apples or boxes.
+prev_crash_x = 0 -- location of crash
+enemy_is_hit_threshold=100000 -- this is the threshold that is beyond it means crash has hit an enemy. Consequently, this implies that the enemy has got out sight.
 
-flickering_value = 1 -- this value is the minimum value that the enemy x location flickers at if it's not visible on screen so the prev_enemy_loc_value  should be bigger than it.
+moving_factor=0.1 -- this factor minimizes the moving reward in order not for crash to be consistently moving forward if it misses some apples or boxes.
+
+flickering_value = 1 -- this value is the minimum value that the enemy x location flickers at if it's not visible on screen, so the prev_enemy_loc_value should be bigger than it.
 
 time_penalty=0.01 -- a time penalty to penalize the agent from being AFK or not finishing episode
 
@@ -30,10 +31,10 @@ function apple_reward()
 end
 
 function enemy_reward()
-    -- If the crash hits the enemy the enemy location value hits a very big value. 
+    -- If crash hits the enemy the enemy location value hits a very big value. 
     -- there is also a condition that the previous location of the enemy is not on the flickering value.
     if data.enemy-prev_enemy_loc_value  > enemy_is_hit_threshold  and prev_enemy_loc_value > flickering_value then
-        reward_enemy=2
+        reward_enemy=1
     else reward_enemy=0    
     end
     
