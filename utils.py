@@ -1,44 +1,14 @@
+from tensorflow import keras
 import cv2
 import numpy as np
 import gym
 
 
-def wrapframe(frame):
+def wrapframe(obs):
     """Converts the frames into grey scale and resizes them into 84x84 images"""
-    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
-    frame = cv2.resize(
-        frame, (84, 84), interpolation=cv2.INTER_AREA
-    )
-    return frame
-
-
-def stackframes(data, k=4):
-    """Frame stacking function which takes a multiple steps in the 
-    environment and stacks them on top of each other for the temporal
-    information for the agent.
-    """
-    rollout = []
-    rewards= []
-    for stack in range(0, len(data)-k, k):
-        framestack = []
-        rewardstack = []
-
-        for step in range(min(k, len(data)-stack)):
-            framestack.append(wrapframe(data[stack+step][0]))
-            rewardstack.append(data[stack+step][1])
-        if len(framestack) < k:
-            framestack.append(framestack[-1]*(k-len(framestack)))
-
-        # calculate the average of the rewards in the stacked steps and round them
-        reward = sum(rewardstack)/k
-        reward = np.round(reward, 2)
-        rewards.append(reward)
-        framestack = np.array(framestack)
-        # transpose the (k,84,84) shape to (84,84,k)
-        framestack = np.transpose(framestack, (1, 2, 0))
-        rollout.append(framestack)
-    return np.array(rollout,dtype=np.float32),np.array(rewards,dtype=np.float32)
-
+    observations = np.array([cv2.resize(frame, (84, 84), interpolation=cv2.INTER_AREA) for frame in obs],dtype=np.float32)
+    observations = np.transpose(observations, (1, 2, 0))
+    return observations
 
 """
 Define discrete action spaces for Gym Retro environments with a limited set of button combos
@@ -79,3 +49,14 @@ class CrashDiscretizer(Discretizer):
     def __init__(self, env):
         super().__init__(env=env, combos=[['LEFT'], ['RIGHT'], [
             'LEFT', 'R'], ['RIGHT', 'R'], ['A'], ['R'], ['B'], [None]])
+
+
+"""Create the learning rate scheduler"""
+
+class LinearDecay(keras.optimizers.schedules.LearningRateSchedule):
+  def __init__(self, initial_learning_rate, total_steps):
+    self.initial_learning_rate = initial_learning_rate
+    self.total_steps=total_steps
+  def __call__(self, step):
+     # Linear Decay Scheduling 
+     return self.initial_learning_rate - (step / self.total_steps) * self.initial_learning_rate
