@@ -44,13 +44,11 @@ class Agent(tf.keras.Model):
         distribution=tfp.distributions.Categorical(probs) 
         #sample an action from this distribution 
         action=distribution.sample()
-        #calculate the entropy in this probability distribution to account for better exploration
-        entropy=distribution.entropy()
         # take the log of the probability of the chosen action for the ratio of old to new policy
         log_prob = distribution.log_prob(action)
         # get the value of this state for advantage estimation
         value = self.critic(state)
-        return np.array(action),np.array(log_prob,dtype=np.float32),np.array(entropy,dtype=np.float32),np.array(value,dtype=np.float32)
+        return np.array(action),np.array(log_prob,dtype=np.float32),np.array(value,dtype=np.float32)
 
 
     def learn(self):
@@ -88,13 +86,24 @@ class Agent(tf.keras.Model):
                                                                                                             self.rewards[shuffled_indices],\
                                                                                                             self.dones[shuffled_indices]
             
-            number_of_batches = len(self.rewards)//32
+            number_of_batches = int(np.ceil(len(self.rewards)/32))
             for increment in range(0,number_of_batches,1):
                 with tf.GradientTape() as tape:
                     #Take Batches from the rollout 
-                    old_log_probs=self.log_probs[increment*32:(increment+1)*32]
-                    states=self.observations[increment*32:(increment+1)*32]/255
-                    actions=self.actions[increment*32:(increment+1)*32]
+                    if increment!=number_of_batches-1:
+                        #in case the batches weren't exactly multiples of the batchsize
+                        old_log_probs=self.log_probs[increment*32:(increment+1)*32]
+                        states=self.observations[increment*32:(increment+1)*32]/255
+                        actions=self.actions[increment*32:(increment+1)*32]
+                        m_advantages=advantages[increment*32:(increment+1)*32]
+                        old_values=self.values[increment*32:(increment+1)*32]
+                    else:
+                        old_log_probs=self.log_probs[increment:]
+                        states=self.observations[increment:]/255
+                        actions=self.actions[increment:]
+                        m_advantages=advantages[increment:]
+                        old_values=self.values[increment:]
+                        
                     #convert them to tensorflow tensors for the gradient tape and backprop procedure
                     old_log_probs=tf.convert_to_tensor(old_log_probs)
                     states=tf.convert_to_tensor(states)
@@ -107,8 +116,6 @@ class Agent(tf.keras.Model):
                     log_probs=distribution.log_prob(actions)
                     values = self.critic(states)
                     
-                    m_advantages=advantages[increment*32:(increment+1)*32]
-                    old_values=self.values[increment*32:(increment+1)*32]
                     
                     log_probs=tf.expand_dims(log_probs,1)
                     m_advantages=tf.expand_dims(m_advantages,1)
