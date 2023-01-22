@@ -3,6 +3,7 @@ import tensorflow as tf
 import tensorflow_probability as tfp 
 import numpy as np 
 from utils import LinearDecay
+
 class Agent(tf.keras.Model):
     def __init__(self,num_actions,rollout_horizon=1024,total_steps=80000000,entropy_c2=0.02,vf_c1=1 , gae_lambda=0.95,discount_gamma=0.99,epsilon_clip=0.2, batch_size=32,n_epochs=5):
         super(Agent,self).__init__()
@@ -14,7 +15,7 @@ class Agent(tf.keras.Model):
         # Create the second critic-model with its own head
         self.critic = tf.keras.Sequential(self.backbone.layers)
         self.critic.add(tf.keras.layers.Dense(1))
-        learning_rate=0.003
+        learning_rate=0.007
         self.entropy_c2=entropy_c2
         self.vf_c1=vf_c1
         self.n_epochs=n_epochs
@@ -50,10 +51,11 @@ class Agent(tf.keras.Model):
         value = self.critic(state)
         return np.array(action),np.array(log_prob,dtype=np.float32),np.array(value,dtype=np.float32)
 
-
+    @tf.function
     def learn(self):
         """Where the agent learns from the rollouts, specifically calculating
          generalized advantage estimation, loss functions for policy, value and entropy loss, """
+
         self.observations,self.actions,self.log_probs,self.values,self.rewards,self.dones=np.array(self.observations,dtype=np.float32),\
                                                                                           np.array(self.actions,dtype=np.float32),\
                                                                                           np.array(self.log_probs,dtype=np.float32),\
@@ -108,6 +110,8 @@ class Agent(tf.keras.Model):
                     old_log_probs=tf.convert_to_tensor(old_log_probs)
                     states=tf.convert_to_tensor(states)
                     actions=tf.convert_to_tensor(actions)
+                    old_values=tf.convert_to_tensor(old_values)
+                    m_advantages=tf.convert_to_tensor(m_advantages)
                     actions=tf.squeeze(actions,1)
                     #do inference for the new log_probabilites for the ratio between old policy and new policy
                     probs=self.actor(states)
@@ -139,7 +143,7 @@ class Agent(tf.keras.Model):
                     #take the mean
                     entropies=tf.math.reduce_mean(entropies)
                     # the total loss including the actor, the critic the entropies 
-                    total_loss=actor_loss - entropies*self.entropy_c2 + critic_loss*self.vf_c1
+                    total_loss = actor_loss - entropies*self.entropy_c2 + critic_loss*self.vf_c1
                 # Compute gradients
                 grads = tape.gradient(total_loss, self.backbone.trainable_variables + self.actor.trainable_variables + self.critic.trainable_variables)
                 self.optimizer.apply_gradients(zip(grads, self.backbone.trainable_variables + self.actor.trainable_variables + self.critic.trainable_variables))

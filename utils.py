@@ -2,6 +2,7 @@ from tensorflow import keras
 import cv2
 import numpy as np
 import gym
+import pickle
 
 
 def wrapframe(obs):
@@ -9,6 +10,12 @@ def wrapframe(obs):
     observations = np.array([cv2.resize(frame, (84, 84), interpolation=cv2.INTER_AREA) for frame in obs],dtype=np.float32)
     observations = np.transpose(observations, (1, 2, 0))
     return observations
+
+def save_scores(scores):
+    file_name = "scores.pkl"
+
+    with open(file_name, "wb") as f:
+        pickle.dump(scores, f)
 
 """
 Define discrete action spaces for Gym Retro environments with a limited set of button combos
@@ -60,3 +67,4 @@ class LinearDecay(keras.optimizers.schedules.LearningRateSchedule):
   def __call__(self, step):
      # Linear Decay Scheduling 
      return self.initial_learning_rate - (step / self.total_steps) * self.initial_learning_rate
+
