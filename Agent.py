@@ -31,7 +31,9 @@ class Agent(tf.keras.Model):
         
         self.critic.compile(optimizer=self.optimizer)
         self.actor.compile(optimizer=self.optimizer)
-    
+        #checkpoint objects for saving the models for actor and critic
+        self.actor_checkpt = tf.train.Checkpoint(self.actor)
+        self.critic_checkpt = tf.train.Checkpoint(self.critic)
     def predict_actor_critic(self,state):
         state=tf.convert_to_tensor([state])
         #normalize the frames 
@@ -144,6 +146,16 @@ class Agent(tf.keras.Model):
         self.values.append(value)
         self.rewards.append(reward)
         self.dones.append(done)
+
+    def save_models(self,episode):
+        """A method for saving the actor critic models checkpoints"""
+        self.actor_checkpt.save(f'./checkpoints/actor/{episode}/')
+        self.critic_checkpt.save(f'./checkpoints/critic/{episode}/')
+    
+    def restore_models(self,episode):
+        """a method for restoring the models from checkpoints"""
+        self.actor_checkpt.restore("./checkpoints/actor/{episode}/")
+        self.critic_checkpt.restore("./checkpoints/critic/{episode}/")
 
     def clear_memory(self):
         """Clear the memory after one episode of on-policy updates"""
