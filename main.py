@@ -7,7 +7,7 @@ import cv2
 from gym.wrappers import GrayScaleObservation,FrameStack,TransformObservation
 def main():
     episode_num=500_000 #number of episodes
-    rollout_horizon=20 # number of steps in each episode 
+    rollout_horizon=512 # number of steps in each episode 
     num_actions=8 #number of actions crash can take
     batch_size=32
     num_epochs=5
@@ -20,23 +20,31 @@ def main():
     env=FrameStack(env,6)
     env = TransformObservation(env, wrapframe)   
     PPOAgent=Agent(num_actions)    
-    for episode in range(episode_num):
+    score_history = []
+    n_steps = 0
+    print("Beginning Training....")
+    for episode in range(1,episode_num):
+        score = 0
         data=[]
-        # env = Monitor(env, f"./videos/Crash_{episode}", force=True)
         movie_path=f"./videos/Crash-{episode}.bk2"
         observation = env.reset()
+
         for _ in range(rollout_horizon):
-            action, log_prob, entropy, value = PPOAgent.predict_actor_critic(observation)
-            observation, reward, done, _ = env.step(env.action_space.sample())
+            action, log_prob, _, value = PPOAgent.predict_actor_critic(observation)
+            observation, reward, done, _ = env.step(action[0])
+            score +=reward
+            n_steps+=1
             # env.render()
-            PPOAgent.store_rollout(observation,action,log_prob,entropy,value,np.round(reward,2),done)
+            PPOAgent.store_rollout(observation,action,log_prob,value,np.round(reward,2),done)
             if done:
                 observation = env.reset()
                 break
-        PPOAgent.learn()
-        break
-        # PPOAgent.learn()
-        if episode%2==0:
+        PPOAgent.learn()  
+        score_history.append(score)
+        avg_score=np.average(score_history[-100:])
+        print('episode', episode, 'score %.1f' % score, 'avg score %.1f' % avg_score,
+              'time_steps', n_steps, 'learning_steps', episode*(rollout_horizon/batch_size)*num_epochs)
+        if episode in [1,100,200,500,1000]:
             env.record_movie(movie_path)
             
 if __name__ == '__main__':
