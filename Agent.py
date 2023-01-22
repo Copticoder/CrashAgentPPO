@@ -33,8 +33,7 @@ class Agent(tf.keras.Model):
         self.actor.compile(optimizer=self.optimizer)
     
     def predict_actor_critic(self,state):
-        if state.ndim < 4:
-            state=tf.convert_to_tensor([state])
+        state=tf.convert_to_tensor([state])
         #normalize the frames 
         state/=255
 
