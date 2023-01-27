@@ -18,7 +18,7 @@ env=CrashDiscretizer(env)
 num_outputs=8
 #converting the observations to grey scale, framestacking them and resizing them to (84,84), and then stacking frames
 env=GrayScaleObservation(env)  
-env=FrameStack(env,4)
+env=FrameStack(env,7)
 env = TransformObservation(env, wrapframe)   
 PPOAgent=Agent(num_actions=num_outputs,learning_rate=learning_rate,rollout_horizon=rollout_horizon,batch_size=batch_size,n_epochs=num_epochs)
 # PPOAgent.restore_models(50)
