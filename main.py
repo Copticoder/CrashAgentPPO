@@ -1,7 +1,7 @@
 import numpy as np
 import retro
 import torch
-from utils import wrapframe, CrashDiscretizer,save_scores
+from utils import CrashDiscretizer,save_scores
 from Agent import Agent
 from gym.wrappers import GrayScaleObservation,FrameStack,TransformObservation
 import cv2 
@@ -17,7 +17,7 @@ env = retro.make(game='CrashBandicootTheHugeAdventure-GbAdvance',state="JustInSl
 #This removes unnecessary button actions
 env=CrashDiscretizer(env) 
 num_outputs=8
-#converting the observations to grey scale, framestacking them and resizing them to (84,84), and then stacking frames
+#converting the observations to grey scale, framestacking them and resizing, and then stacking frames
 env = StochasticFrameSkip(env,4,0.3) 
 # env = Downsample(env,2)
 env= GrayScaleObservation(env)
@@ -45,13 +45,12 @@ for episode in range(51,episode_num+1):
         dist, value = PPOAgent.model(observation)  # nn evaluate the observation
         action= dist.sample().cuda() if PPOAgent.use_cuda else dist.sample()
         next_observation, reward, done, _ = env.step(action.cpu().numpy()[0])
-        reward=[np.around(reward,2)]
-        done=[done]
-        score+=reward[0]
+        reward=np.around(reward,2)
+        score+=reward
         log_prob = dist.log_prob(action) 
         log_prob_vect = log_prob.reshape(len(log_prob), 1)
         action_vect = action.reshape(len(action), 1)
-        PPOAgent.store_rollout(observation,action_vect,log_prob_vect,value,torch.FloatTensor(reward).unsqueeze(1).to(PPOAgent.device),torch.FloatTensor(done).unsqueeze(1).to(PPOAgent.device))
+        PPOAgent.store_rollout(observation,action_vect,log_prob_vect,value,torch.FloatTensor(reward).to(PPOAgent.device),torch.FloatTensor(done).to(PPOAgent.device))
         observation = next_observation
         env.render()
 

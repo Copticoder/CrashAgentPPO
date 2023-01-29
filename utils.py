@@ -4,11 +4,6 @@ import gym
 import pickle
 from stable_baselines3.common.atari_wrappers import *
 
-def wrapframe(obs):
-    """Converts the frames into grey scale and resizes them into 84x84 images"""
-    observations = np.array([cv2.resize(frame, (84, 84), interpolation=cv2.INTER_AREA) for frame in obs],dtype=np.float32)
-    return observations
-
 def save_scores(scores):
     file_name = "scores.pkl"
 
@@ -64,7 +59,7 @@ cv2.ocl.setUseOpenCL(False)
 import numpy as np
 import gym
 
-
+"""helpful Wrappers from stablebaselines retro"""
 class StochasticFrameSkip(gym.Wrapper):
     def __init__(self, env, n, stickprob):
         gym.Wrapper.__init__(self, env)

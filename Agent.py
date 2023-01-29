@@ -30,12 +30,12 @@ class Agent(torch.nn.Module):
         """Where the agent learns from the rollouts, specifically calculating
          generalized advantage estimation, loss functions for policy, value and entropy loss, """
 
-        gae = 0 # first gae always to 0
+        gae = 0 
         returns = []
         """This is for calculating the advantage which is the accumulation of rewards
         and state values according to the equations in the PPO paper: https://arxiv.org/pdf/1707.06347.pdf
         -> At = δt + (γλ)δt+1 + · · · """
-        for step in reversed(range(len(self.rewards))): # for each positions with respect to the result of the action 
+        for step in reversed(range(len(self.rewards))): #calculate returns from the end  
             delta = self.rewards[step] + self.discount_gamma * self.values[step + 1] * (1-self.dones[step]) - self.values[step] 
             gae = delta + self.discount_gamma * self.gae_lambda * (1-self.dones[step]) * gae 
             returns.insert(0, gae + self.values[step])
