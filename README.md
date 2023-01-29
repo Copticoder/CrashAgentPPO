@@ -49,7 +49,7 @@ The Overall results are noisy which is the state of the majority of RL algorithm
 ![Alt text](https://github.com/Copticoder/CrashAgentPPO/blob/master/episode_vs_rewards_Crash.png "reward graph")
 ## Agent Performance.
 This video shows one episode from its highest reward return.
-
+                       https://github.com/Copticoder/CrashAgentPPO/blob/master/videos/example%20episode.mp4
 
 # Future Work
 For Future work, there are some bottlenecks that might be addressed. For example, It might be that the CNN archetictures used was a bottle neck in this specific paradigm when dealing with retro environments. As the details of these environments are much more than the Atari environments with DQN for example. A VIT (Vision transformer) Approach can be used. Moreover, Attention mechanisms for solving such problems may make the agent learn to process important parts of the frames like enemy locations, box locations in more details.
