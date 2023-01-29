@@ -36,7 +36,7 @@ critic.fc.bias   torch.Size([1])
 * batch_size=64
 * n_epochs=10
 
-The agent learned over the course of 1500 episodes equivalently 8 hours of training with approximately 2 Million steps.
+The agent learned over the course of 1200 episodes equivalently 8 hours of training with approximately 2 Million steps.
 
 PPO Paper: https://arxiv.org/pdf/1707.06347.pdf
 
