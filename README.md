@@ -48,7 +48,10 @@ The Overall results are noisy which is the state of the majority of RL algorithm
 
 ![Alt text](https://github.com/Copticoder/CrashAgentPPO/blob/master/episode_vs_rewards_Crash.png "reward graph")
 ## Agent Performance.
+
 This video shows one episode from its highest reward return.
+
+
 [![Crash Agent Performance](https://img.youtube.com/vi/5j5INyqFaUY/0.jpg)](https://www.youtube.com/watch?v=5j5INyqFaUY)
 
 
