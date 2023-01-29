@@ -5,7 +5,7 @@ prev_lives=data.lives
 prev_crash_x = 0 -- location of crash
 enemy_is_hit_threshold=100000 -- this is the threshold that is beyond it means crash has hit an enemy. Consequently, this implies that the enemy has got out sight.
 
-moving_factor=0.1 -- this factor minimizes the moving reward in order not for crash to be consistently moving forward if it misses some apples or boxes.
+moving_factor=0.03 -- this factor minimizes the moving reward in order not for crash to be consistently moving forward if it misses some apples or boxes.
 
 flickering_value = 1 -- this value is the minimum value that the enemy x location flickers at if it's not visible on screen, so the prev_enemy_loc_value should be bigger than it.
 
@@ -20,11 +20,11 @@ function calculate_reward()
     -- These Conditions are when crash gets into a bonus teleportation the values fliker and the score explodes so there
     -- should be thresholding 
     if reward_moving < -1 then 
-        reward_moving = -0.1
+        reward_moving = -0.03
     end
 
     if reward_moving > 1 then
-        reward_moving = 0.1
+        reward_moving = 0.03
     end
     
     if reward_boxes < 0 and reward_apples < 0 and penalty_lives < -1 then 
@@ -45,7 +45,7 @@ function calculate_reward()
     prev_lives=data.lives
     prev_crash_x = data.crashloc_x
     
-    return reward_boxes + reward_apples + reward_enemy + penalty_lives - time_penalty + reward_moving
+    return reward_boxes + reward_apples + reward_enemy + penalty_lives + reward_moving
 end
 
 function apple_reward()
