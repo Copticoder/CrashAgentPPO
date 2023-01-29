@@ -6,7 +6,7 @@ from Agent import Agent
 from gym.wrappers import GrayScaleObservation,FrameStack,TransformObservation
 import cv2 
 from utils import *
-episode_num=5000 #number of episodes
+episode_num=1500 #number of episodes
 rollout_horizon=2048 #number of steps in each episode 
 num_actions=8 #number of actions crash can take
 batch_size=64
@@ -33,7 +33,7 @@ steps=0
 max_score=0
 score = 0
 print("Beginning Training....")
-for episode in range(51,episode_num+1):
+for episode in range(1,episode_num+1):
     data=[]
     movie_path=f"./videos/Crash-{episode}.bk2"
     observation = env.reset()
