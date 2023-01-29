@@ -9,7 +9,7 @@ moving_factor=0.1 -- this factor minimizes the moving reward in order not for cr
 
 flickering_value = 1 -- this value is the minimum value that the enemy x location flickers at if it's not visible on screen, so the prev_enemy_loc_value should be bigger than it.
 
-time_penalty=0.01 -- a time penalty to penalize the agent from being AFK or not finishing episode
+time_penalty=0.001 -- a time penalty to penalize the agent from being AFK or not finishing episode
 
 function calculate_reward() 
     reward_apples = apple_reward()
@@ -17,6 +17,28 @@ function calculate_reward()
     reward_boxes = boxes_reward()
     penalty_lives= lives_penalty()
     reward_moving = moving_reward()*moving_factor
+    -- These Conditions are when crash gets into a bonus teleportation the values fliker and the score explodes so there
+    -- should be thresholding 
+    if reward_moving < -1 then 
+        reward_moving = -0.1
+    end
+
+    if reward_moving > 1 then
+        reward_moving = 0.1
+    end
+    
+    if reward_boxes < 0 and reward_apples < 0 and penalty_lives < -1 then 
+        reward_boxes=0
+        reward_apples=0
+        penalty_lives=0
+    end
+
+    if reward_boxes + reward_apples + penalty_lives > 10 then 
+        reward_boxes=0
+        reward_apples=0
+        penalty_lives=0
+    end
+
     prev_apples=data.apples
     prev_enemy_loc_value =data.enemy
     prev_boxes=data.boxes
@@ -27,6 +49,10 @@ function calculate_reward()
 end
 
 function apple_reward()
+    if data.apples-prev_apples<0 then 
+        prev_apples=data.apples
+    end 
+    
     return (data.apples-prev_apples)
 end
 
@@ -42,6 +68,10 @@ function enemy_reward()
 end
 
 function boxes_reward()
+    if data.boxes-prev_boxes<0 then 
+        prev_boxes=data.boxes
+    end 
+
     return (data.boxes-prev_boxes)
 end
 

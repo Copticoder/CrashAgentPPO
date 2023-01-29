@@ -1,6 +1,6 @@
 import numpy as np 
 import torch 
-from networks import ActorCritic
+from networks import ActorCritic,LinearModel
 import os
 class Agent(torch.nn.Module):
     def __init__(self,num_actions,learning_rate,rollout_horizon=2048,entropy_c2=0.01,vf_c1=1 , gae_lambda=0.95,discount_gamma=0.99,epsilon_clip=0.2, batch_size=32,n_epochs=5):
@@ -10,9 +10,8 @@ class Agent(torch.nn.Module):
         print('Device:', self.device)
         # Create the whole model for both the actor and the critic 
         self.model = ActorCritic(num_actions).to(self.device) # save the model, Tensor.to(device) Moves and/or casts the parameters and buffers.
+        "=========HYPERPARAMETERS========="
         self.optimizer = torch.optim.Adam(self.model.parameters(), lr=learning_rate) # Implements Adam algorithm.
-        #create a state dict for saving the model
-        self.state_dict = self.model.state_dict()
         self.batch_size=batch_size
         self.entropy_c2=entropy_c2
         self.vf_c1=vf_c1
@@ -24,6 +23,8 @@ class Agent(torch.nn.Module):
         self.learning_rate=learning_rate
         # Initialize agent memory 
         self.observations,self.values,self.rewards,self.dones,self.log_probs,self.actions=[],[],[],[],[],[]        
+        #create a state dict for saving the model
+        self.state_dict = self.model.state_dict()
 
     def learn(self):
         """Where the agent learns from the rollouts, specifically calculating
@@ -43,9 +44,11 @@ class Agent(torch.nn.Module):
         returns = torch.cat(returns).detach() # concatenates along existing dimension and detach the tensor from the network graph, making the tensor no gradient
         self.log_probs = torch.cat(self.log_probs).detach() 
         self.values = torch.cat(self.values).detach()
-        self.observations = torch.stack(self.observations)
+        self.observations = torch.cat(self.observations)
         self.actions = torch.cat(self.actions)
-        advantages = returns - self.values # compute advantage for each action
+
+        advantages = returns - self.values # Advantage Estimation
+        
         dataset = torch.utils.data.TensorDataset(self.log_probs, self.observations, self.actions,returns, advantages)
         for _ in range(self.n_epochs):
             data_loader = torch.utils.data.DataLoader(dataset, batch_size=self.batch_size, shuffle=True)
@@ -55,7 +58,7 @@ class Agent(torch.nn.Module):
                 advantages_batch-=advantages_batch.mean()
                 advantages_batch/=(advantages_batch.std()+1e-8)
                 dist, values = self.model(observations_batch)
-
+                #Entropy of the action probability distribution 
                 entropy = dist.entropy().mean()
                 actions_batch = actions_batch.reshape(1, len(actions_batch)) # take the relative action and take the column
                 new_log_probs = dist.log_prob(actions_batch)
@@ -85,6 +88,7 @@ class Agent(torch.nn.Module):
         file_path=f'./checkpoints/actor-critic/{episode}/model.pth'
         if not os.path.exists(os.path.dirname(file_path)):
             os.makedirs(os.path.dirname(file_path))
+
         """A method for saving the actor critic models checkpoints"""
         # Save the state_dict to a file
         torch.save(self.state_dict, file_path)
