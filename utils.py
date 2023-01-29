@@ -1,8 +1,10 @@
+import matplotlib.pyplot as plt
 import cv2
 import numpy as np
 import gym
 import pickle
 from stable_baselines3.common.atari_wrappers import *
+cv2.ocl.setUseOpenCL(False)
 
 def save_scores(scores):
     file_name = "scores.pkl"
@@ -54,10 +56,6 @@ class CrashDiscretizer(Discretizer):
 
 
 
-import cv2
-cv2.ocl.setUseOpenCL(False)
-import numpy as np
-import gym
 
 """helpful Wrappers from stablebaselines retro"""
 class StochasticFrameSkip(gym.Wrapper):
@@ -118,7 +116,6 @@ class Downsample(gym.ObservationWrapper):
 
 
 
-import matplotlib.pyplot as plt
 
 def load_and_plot():
     with open('scores.pkl', 'rb') as f:
@@ -129,4 +126,4 @@ def load_and_plot():
     plt.xlabel("Episodes")
     plt.ylabel("Rewards")
     plt.title("Episode vs Rewards Plot")
-    plt.savefig("episode_vs_rewards_Crash.png")
+    plt.savefig("./results/episode_vs_rewards_Crash.png")

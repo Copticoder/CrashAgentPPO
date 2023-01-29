@@ -58,25 +58,3 @@ class ActorCritic(nn.Module):
         value = self.critic(x)
         return dist, value
     
-
-class LinearModel(nn.Module):
-    """This is for classic control"""
-    def __init__(self, num_inputs, num_outputs, hidden_size):
-        super(LinearModel, self).__init__()
-        self.critic = nn.Sequential( # The “Critic” estimates the value function
-            nn.Linear(num_inputs, hidden_size),
-            nn.ReLU(),
-            nn.Linear(hidden_size, 1)
-        )
-        self.actor = nn.Sequential( # The “Actor” updates the policy distribution in the direction suggested by the Critic (such as with policy gradients)
-            nn.Linear(num_inputs, hidden_size),
-            nn.ReLU(),
-            nn.Linear(hidden_size, num_outputs),
-            torch.tanh(),
-        )
-    def forward(self, x):
-        value = self.critic(x)
-        probs = self.actor(x)
-        dist = Categorical(probs)
-        return dist, value
-
