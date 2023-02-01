@@ -3,8 +3,8 @@ This repo contains my implementation for a variant of the PPO reinforcement lear
 Specifically, on Crash Bandicoot The Huge Adventure game. This implementation and training was done on my personal laptop on a mid-range GPU Nvidia 1650 4GB memory 1485 MHz Base Clock. THIS IS ONLY FOR EDUCATIONAL PURPOSES AND IT'S A PERSONAL PROJECT.
 # Details
 This variant of PPO doesn't contain the following original implementation details:
-* didn't add vectorized environment implementation.
-* didn't add Learning Rate Annealing.
+* didn't add vectorized environments where there are multiple environments collecting data in parallel.
+* didn't add linear Learning Rate Annealing.
 
 However, The model archeticure is as follows (From Pytorch Statedict) the input are stacked 4 frames of the game in greyscale: 
 ```
