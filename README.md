@@ -3,9 +3,10 @@ This repo contains my implementation for a variant of the PPO reinforcement lear
 Specifically, on Crash Bandicoot The Huge Adventure game. This implementation and training was done on my personal laptop on a mid-range GPU Nvidia 1650 4GB memory 1485 MHz Base Clock. THIS IS ONLY FOR EDUCATIONAL PURPOSES AND IT'S A PERSONAL PROJECT.
 # Details
 This variant of PPO doesn't contain the following original implementation details:
-* no vectorized environment implementation. due to low computational resources.
+* didn't add vectorized environment implementation.
 * didn't add Learning Rate Annealing.
-However, The model archeticure is as follows (From Pytorch Statedict) the input is a stacked 4 frames of the game: 
+
+However, The model archeticure is as follows (From Pytorch Statedict) the input are stacked 4 frames of the game in greyscale: 
 ```
 #Backbone CNN
 Backbone.conv1.weight    torch.Size([32, 4, 3, 3])
@@ -47,7 +48,7 @@ The reward function in the LUA program file is as follows, when crash moves forw
 The Overall results are noisy which is the state of the majority of RL algorithms. However, as shown some episodes show high rewards and others very low with an average of +75.
 
 ![Alt text](https://github.com/Copticoder/CrashAgentPPO/blob/master/episode_vs_rewards_Crash.png "reward graph")
-## Agent Performance.
+## Agent Performance
 
 This video shows one episode from its highest reward return.
 
@@ -56,4 +57,4 @@ This video shows one episode from its highest reward return.
 
 
 # Future Work
-For Future work, there are some bottlenecks that might be addressed. For example, It might be that the CNN archetictures used was a bottle neck in this specific paradigm when dealing with retro environments. As the details of these environments are much more than the Atari environments with DQN for example. A VIT (Vision transformer) Approach can be used. Moreover, Attention mechanisms for solving such problems may make the agent learn to process important parts of the frames like enemy locations, box locations in more details.
+For Future work, there are some bottlenecks that might be addressed. For example, It might be that the CNN archetictures used were a bottle neck in this specific paradigm when dealing with retro environments. As the details of these environments are much more than the Atari environments with a DQN approach for example. A Vision Transformers (VIT) (Dosovitskiy et al.) Approach might be more effective. Moreover, Attention mechanisms for solving such problems may make the agent learn to process important parts of the frames like enemy locations, box locations in more details.
