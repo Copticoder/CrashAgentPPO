@@ -5,7 +5,8 @@ Specifically, on Crash Bandicoot The Huge Adventure game. This implementation an
 * Agent.py : Contans the agent class, including the agent memory, neural networks initialization, the learning algorithm (PPO), training loop and finally saving and loading the models
 * networks.py : contains the classes for the backbone (Shared CNN network), the actor head, the critic head and finally the whole ActorCritic archeticture.
 * main.py : The program that runs the crash environment and begins rolling out episodes and collecting data for the agnet as well as saving episode recordings and score results.
-
+* reward.lua : contains the program for reshaping the rewards coming from the openAI gameboy advance environments. Furthermore, editing the score coming like lives remaining, number of apples eaten, number of boxes broken and so on..
+* utils.py : a file that contains some helper functions and openAI wrappers for the environment.
 # Details
 This variant of PPO doesn't contain the following original implementation details:
 * didn't add vectorized environments where there are multiple environments collecting data in parallel.
