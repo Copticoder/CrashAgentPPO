@@ -2,9 +2,9 @@
 This repo contains my implementation for a variant of the PPO reinforcement learning algorithm on the retro environments by openAI.
 Specifically, on Crash Bandicoot The Huge Adventure game. This implementation and training was done on my personal laptop on a mid-range GPU Nvidia 1650 4GB memory 1485 MHz Base Clock. THIS IS ONLY FOR EDUCATIONAL PURPOSES AND IT'S A PERSONAL PROJECT.
 # KeyFiles 
-* Agent.py : Contans the agent class, including the agent memory, neural networks initialization, the learning algorithm (PPO) and training loop and finally saving and loading the models
+* Agent.py : Contans the agent class, including the agent memory, neural networks initialization, the learning algorithm (PPO), training loop and finally saving and loading the models
 * networks.py : contains the classes for the backbone (Shared CNN network), the actor head, the critic head and finally the whole ActorCritic archeticture.
-* main.py : The program that runs the crash environment and begins rolling out episodes and collecting data for the agnet as well as saving the score results.
+* main.py : The program that runs the crash environment and begins rolling out episodes and collecting data for the agnet as well as saving episode recordings and score results.
 
 # Details
 This variant of PPO doesn't contain the following original implementation details:
