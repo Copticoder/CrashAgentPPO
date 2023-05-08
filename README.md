@@ -68,7 +68,7 @@ For Future work, there are some bottlenecks that might be addressed. For example
   Brockman, G., Cheung, V., Pettersson, L., Schneider, J., Schulman, J., Tang, J., & Zaremba, W. (2016). Openai gym. arXiv preprint arXiv:1606.01540.
 
 - Retro:
-  Nicholson, P., Pfau, V., Hessel, M., Asadi, R., Maheswaranathan, N., Kapturowski, S., … Sutskever, I. (2018). Playing hard exploration games by watching youtube. arXiv preprint arXiv:1805.11592.
+  Nichol, A., Pfau, V., Hesse, C., Klimov, O., & Schulman, J. (2018). Gotta Learn Fast: A New Benchmark for Generalization in RL. arXiv preprint arXiv:1804.03720.
 
 - Proximal Policy Optimization (PPO):
   Schulman, J., Wolski, F., Dhariwal, P., Radford, A., & Klimov, O. (2017). Proximal policy optimization algorithms. arXiv preprint arXiv:1707.06347.
