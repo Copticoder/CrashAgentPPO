@@ -87,3 +87,6 @@ For Future work, there are some bottlenecks that might be addressed. For example
 
 - Convolutional Neural Networks: 
   Convolutional Neural Networks (CNNs): LeCun, Y., Bengio, Y., & Hinton, G. (2015). Deep learning. nature, 521(7553), 436-444.
+  
+- Deep Q-Networks:
+  Volodymyr Mnih, Kavukcuoglu Koray, David Silver, Alex Graves, Ioannis Antonoglou, Daan Wierstra, and Martin Riedmiller. Human-level control through deep reinforcement learning. Nature, 518(7540):529–533,     February 2015.
