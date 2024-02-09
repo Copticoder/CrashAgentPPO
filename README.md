@@ -1,5 +1,5 @@
 # Abstract on CrashAgentPPO
-This repo contains my implementation for a variant of the PPO reinforcement learning algorithm on the retro environments by openAI.
+This repo contains my implementation of the PPO reinforcement learning algorithm on the retro environments by openAI.
 Specifically, on Crash Bandicoot The Huge Adventure game. Moreover, The results of the learning experiment were noisy resembling most of reinforcement learning experiments. This implementation and training was done on my personal laptop on a mid-range GPU Nvidia 1650 4GB memory. This project is for educational and demonstrative purposes.
 # KeyFiles 
 * Agent.py : Contans the agent class, including the agent memory, neural networks initialization, the learning algorithm (PPO), training loop and finally saving and loading the models
